@@ -121,3 +121,5 @@ Use **[Pietron](https://github.com/dnek/pietron)** instead, which also has cross
 ### 20170614
 - 白ブロック上を滑る際の仕様を公式に準拠。
 - レイアウトの微修正。
+### 20210705
+- スタックの型を64bit整数に変更。
