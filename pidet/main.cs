@@ -32,7 +32,7 @@ namespace Pidet
         List<Point> slideCodels;
         string inputStr, inputStrTmp, outputStr, currentCommand;
         bool inputRequired = false, paused = true;
-        List<int> stack;
+        List<long> stack;
         List<List<int>> colorBlockSizes = new List<List<int>>();
         List<List<List<List<int>>>> corners = new List<List<List<List<int>>>>(); //各codelのRDLUの端の{x, y(L), y(R)} or {y, x(L), x(R)}
         string[] commandNames = 
@@ -131,7 +131,7 @@ namespace Pidet
             inputStr = inputStrTmp = ReplaceCrLf(tb_input.Text);
             outputStr = currentCommand = "";
             inputRequired = false;
-            stack = new List<int>();
+            stack = new List<long>();
             colorBlockSizes.Clear();
             corners.Clear();
             for (int i = 0; i < fieldWidth; i++)
@@ -379,12 +379,12 @@ namespace Pidet
                             break;
                         case 10: //point
                             if (stack.Count == 0) break;
-                            directionPointer = ((directionPointer + stack[lastStack]) % 4 + 4) % 4;
+                            directionPointer = (int)((directionPointer + stack[lastStack]) % 4 + 4) % 4;
                             stack.RemoveAt(lastStack);
                             break;
                         case 11: //switch
                             if (stack.Count == 0) break;
-                            codelChooser = ((codelChooser + stack[lastStack]) % 2 + 2) % 2;
+                            codelChooser = (int)((codelChooser + stack[lastStack]) % 2 + 2) % 2;
                             stack.RemoveAt(lastStack);
                             break;
                         case 12: //dup
@@ -395,7 +395,7 @@ namespace Pidet
                             if (stack.Count < 2) break;
                             if (stack[lastStack - 1] < 0) break;
                             if (stack.Count - 2 < stack[lastStack - 1]) break;
-                            int rd = stack[lastStack - 1], rc = (stack[lastStack] % rd + rd) % rd;
+                            int rd = (int)stack[lastStack - 1], rc = (int)((stack[lastStack] % rd + rd) % rd);
                             for (int i = 0; i < rc; i++)
                             {
                                 for (int j = 0; j < rd; j++)
@@ -414,8 +414,8 @@ namespace Pidet
                                 inputRequired = true;
                                 break;
                             }
-                            int innum;
-                            if (int.TryParse(tmp[0], out innum))
+                            long innum;
+                            if (long.TryParse(tmp[0], out innum))
                             {
                                 stack.Add(innum);
                                 inputStr = inputStr.Remove(0, inputStr.IndexOf(tmp[0]) + tmp[0].Length);
@@ -640,7 +640,7 @@ namespace Pidet
             tb_input.Text = ReplaceCrLf(inputStr, false);
             tb_output.Text = ReplaceCrLf(outputStr, false);
             string stackStr = "";
-            foreach (int item in stack)
+            foreach (long item in stack)
             {
                 if (item < 32) stackStr += item.ToString() + "(??)\r\n";
                 else
